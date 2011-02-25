@@ -1,0 +1,5 @@
+%h1= @path
+
+%ul#media_libraries
+  - @media_libraries.entries.each do |file|
+    %li{:data => file.to_html5_data}= file.name
