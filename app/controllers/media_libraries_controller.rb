@@ -1,7 +1,8 @@
 class MediaLibrariesController < ApplicationController
   
   def index
-    @media_libraries = MediaLibrary.find_by_path("/")
+    @path = params[:path] || "/"
+    @media_libraries = MediaLibrary.find_by_path(@path)
 
     respond_to do |format|
       format.html # index.html.erb

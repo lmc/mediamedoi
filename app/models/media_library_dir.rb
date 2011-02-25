@@ -12,6 +12,7 @@ class MediaLibraryDir
     end.sort_by(&:name)
   end
   
+  
   private
   
   def self.path_on_fs(path)

@@ -13,6 +13,10 @@ class MediaLibraryFile
     File.join(MediaLibrary::ROOT,path)
   end
   
+  def directory?
+    File.directory?(filesystem_path)
+  end
+  
   def to_html5_data
     {:name => name,:path => path,:filesystem_path => filesystem_path}
   end

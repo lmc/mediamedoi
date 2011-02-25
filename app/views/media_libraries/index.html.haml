@@ -2,4 +2,7 @@
 
 %ul#media_libraries
   - @media_libraries.entries.each do |file|
-    %li{:data => file.to_html5_data}= file.name
+    - if file.directory?
+      %li.directory{:data => file.to_html5_data}= link_to file.name, :path => file.path
+    -else
+      %li.file{:data => file.to_html5_data}= file.name
