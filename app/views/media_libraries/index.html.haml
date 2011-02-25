@@ -1,8 +1,10 @@
-%h1= @path
-
-%ul#media_libraries
-  - @media_libraries.entries.each do |file|
-    - if file.directory?
-      %li.directory{:data => file.to_html5_data}= link_to file.name, :path => file.path
-    -else
-      %li.file{:data => file.to_html5_data}= file.name
+#home.current
+  .toolbar{:class => classes_for_media_library(@media_libraries)}
+    %h1= @media_libraries.name
+    = link_to 'Back', @media_libraries.up_path, :class => 'back'
+  %ul#media_libraries.rounded
+    - @media_libraries.entries.each do |file|
+      - if file.directory?
+        %li.directory{:data => file.to_html5_data}= link_to file.name, {:path => file.path}, :class => 'slide'
+      -else
+        %li.file{:data => file.to_html5_data}= file.name

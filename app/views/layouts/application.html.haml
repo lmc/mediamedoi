@@ -2,10 +2,16 @@
 %html
   %head
     %title Media Medoi
-    = stylesheet_link_tag :all
+    = stylesheet_link_tag 'jqtouch'
+    = stylesheet_link_tag 'themes/apple/theme'
+    = stylesheet_link_tag 'application'
     = javascript_include_tag 'vendor/jquery.1.5'
+    = javascript_include_tag 'vendor/jqtouch'
     = javascript_include_tag 'rails'
     = javascript_include_tag 'application'
     = csrf_meta_tag
-  %body
+  %body#jqt
     = yield
+    #tabbar
+      = link_to 'Browse', '#'
+      = link_to 'Status', '#'

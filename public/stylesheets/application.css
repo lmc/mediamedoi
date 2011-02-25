@@ -1,0 +1,8 @@
+#jqt .toolbar.no_back > h1 {
+  margin: 1px 0 0 -125px;
+  width: 250px;
+}
+
+#jqt .toolbar.no_back .back {
+  display: none;
+}

@@ -12,6 +12,18 @@ class MediaLibraryDir
     end.sort_by(&:name)
   end
   
+  def name
+    File.basename(path)
+  end
+  
+  def up_path
+    path.split('/')[-2] || '/'
+  end
+  
+  def show_up_path?
+    !(up_path == '/')
+  end
+  
   
   private
   
