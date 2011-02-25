@@ -1,0 +1,21 @@
+<h1>Listing media_libraries</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @media_libraries.each do |media_library| %>
+  <tr>
+    <td><%= link_to 'Show', media_library %></td>
+    <td><%= link_to 'Edit', edit_media_library_path(media_library) %></td>
+    <td><%= link_to 'Destroy', media_library, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Media library', new_media_library_path %>

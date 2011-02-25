@@ -1,0 +1,2 @@
+class MediaLibrary
+end
