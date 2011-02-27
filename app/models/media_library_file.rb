@@ -17,6 +17,11 @@ class MediaLibraryFile
     File.directory?(filesystem_path)
   end
   
+  def entries_count
+    return nil unless directory?
+    Dir.entries(filesystem_path).size
+  end
+  
   def to_html5_data
     {:name => name,:path => path,:filesystem_path => filesystem_path}
   end

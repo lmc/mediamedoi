@@ -9,4 +9,12 @@ class MediaLibrariesController < ApplicationController
     end
   end
   
+  def convert
+    @path = params[:path]
+    @media_library_file = MediaLibraryFile.new(@path)
+    ccc = Converter.convert(@media_library_file)
+    debugger
+    'sdf'
+  end
+  
 end

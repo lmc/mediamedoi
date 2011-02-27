@@ -31,9 +31,9 @@ class MediaLibraryDir
     File.join(MediaLibrary::ROOT,path)
   end
   
-  IGNORE_DIR_ENTRIES = ['.','..']
+  IGNORE_DIR_ENTRIES = ['.','..','.DS_Store','.Spotlight-V100','.Trashes','.fseventsd','ehthumbs_vista.db']
   def self.clean_dir_listing(entries)
-    entries.reject { |entry| IGNORE_DIR_ENTRIES.include?(entries) }
+    entries.reject { |entry| IGNORE_DIR_ENTRIES.include?(entry) }
   end
   
 end
