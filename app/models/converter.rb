@@ -23,9 +23,12 @@ class Converter
           buffer << chr
         else
           progress_line, buffer = buffer, ""
-          parsed = parse_progress_line(progress_line)
-          puts progress_line
-          puts parsed.inspect
+          progress, time_remaining = parse_progress_line(progress_line)
+          #puts progress_line
+          #puts parsed.inspect
+          conversion_queue_item.progress = progress
+          conversion_queue_item.time_remaining_seconds = time_remaining
+          conversion_queue_item.publish_updates
         end
       end
     end

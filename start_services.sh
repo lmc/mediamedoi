@@ -1,0 +1,1 @@
+cd /Users/luke/src/juggernaut/ && node server.js
