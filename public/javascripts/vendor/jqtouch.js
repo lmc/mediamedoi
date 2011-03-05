@@ -631,7 +631,12 @@
                     console.warn('Animation could not be found. Using slideleft.');
                     animation = 'slideleft';
                 }
-
+                
+                var triggered_hash;
+                $el.trigger('jqt:before_goto');
+                if(triggered_hash = $el.data('jqt-hash'))
+                  hash = triggered_hash;
+                
                 if (hash && hash !== '#') {
                     // Internal href
                     $el.addClass('active');

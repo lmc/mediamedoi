@@ -1,0 +1,13 @@
+.toolbar{:class => classes_for_media_library(@media_libraries)}
+  %h1= @media_libraries.name
+  = link_to 'Back', @media_libraries.up_path, :class => 'back'
+  = link_to 'Queue', 'love', :class => 'button'
+%ul.media_library_list.rounded
+  - @media_libraries.entries.each do |file|
+    - if file.directory?
+      %li.directory{:data => file.to_html5_data}
+        = link_to file.name, "#file_browser", 'data-path' => file.path
+        %small.counter= file.entries_count
+    -else
+      %li.file{:data => file.to_html5_data}
+        = link_to file.name, convert_media_libraries_path(:path => file.path)

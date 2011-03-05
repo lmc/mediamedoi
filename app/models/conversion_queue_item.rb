@@ -11,7 +11,9 @@ class ConversionQueueItem < ActiveRecord::Base
   end
   
   def publish_updates
-    Juggernaut.publish(JUGGERNAUT_CHANNEL,{:id => self.id,:progress => self.progress,:time_remaining => self.time_remaining})
+    Juggernaut.publish(JUGGERNAUT_CHANNEL,{
+      :id => self.id, :operation => 'conversion', :progress => self.progress, :time_remaining => self.time_remaining
+    })
   end
   
   def time_remaining_seconds=(seconds_or_array)
