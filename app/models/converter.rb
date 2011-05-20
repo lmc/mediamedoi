@@ -24,8 +24,7 @@ class Converter
         else
           progress_line, buffer = buffer, ""
           progress, time_remaining = parse_progress_line(progress_line)
-          #puts progress_line
-          #puts parsed.inspect
+
           conversion_queue_item.progress = progress
           conversion_queue_item.time_remaining_seconds = time_remaining
           conversion_queue_item.publish_updates

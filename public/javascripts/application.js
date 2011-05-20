@@ -4,27 +4,33 @@ $.jQTouch({
 });
 
 var file_browser_template;
-$.ready(function(){
-  file_browser_template = $('#file_browser').clone().html();
+$(window).ready(function(){
+  file_browser_preload = $('#file_browser_loader').clone().html();
 });
   
 $('.media_library_list li.directory a').live('jqt:before_goto',function(event){
-  if(!file_browser_template)
-    file_browser_template = $('#file_browser').clone().html();
+  //if(!file_browser_template)
+  //  file_browser_template = $('#file_browser').clone().html();
     
-  console.log('live click handler');
   var target = $(event.target);
   var path   = target.data('path');
   
   var new_id = 'file_browser_'+path_to_id(path);
   
-  var template = $('<div></div>').html(file_browser_template);
+  var template = $('<div></div>').html(file_browser_preload);
+  
   template.attr('id',new_id);
-  $('#jqt').append(template)
+  $('#jqt').append(template);
   
   target.data('jqt-hash','#'+new_id);
+
+  var url = '/media_libraries';
+  console.log(url);
+  $.get(url,{path: path,from_browser: true},function(html){
+    $('#'+new_id).html(html);
+  });
 });
 
 function path_to_id(path){
-  return path.replace(/ /,'_').replace(/\//,'__');
+  return hex_sha1(path);
 }

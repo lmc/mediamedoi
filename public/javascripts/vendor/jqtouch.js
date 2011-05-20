@@ -636,6 +636,7 @@
                 $el.trigger('jqt:before_goto');
                 if(triggered_hash = $el.data('jqt-hash'))
                   hash = triggered_hash;
+                //console.log('hash:',hash);
                 
                 if (hash && hash !== '#') {
                     // Internal href
