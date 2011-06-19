@@ -34,6 +34,10 @@ GEM
     columnize (0.3.2)
     compass (0.10.6)
       haml (>= 3.0.4)
+    daemons (1.1.0)
+    delayed_job (2.1.2)
+      activesupport (~> 3.0)
+      daemons
     erubis (2.6.6)
       abstract (>= 1.0.0)
     haml (3.0.25)
@@ -90,6 +94,7 @@ PLATFORMS
 
 DEPENDENCIES
   compass (>= 0.10.6)
+  delayed_job
   haml
   juggernaut
   rails (= 3.0.3)

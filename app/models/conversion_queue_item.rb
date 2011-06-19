@@ -3,6 +3,8 @@ class ConversionQueueItem < ActiveRecord::Base
   MODEL_UPDATE_INTERVAL = 15.seconds
   validates_presence_of :file_path
 
+  after_create :generate_job!
+
   def self.new_from_media_library_file(media_library_file)
     self.new(:file_path => media_library_file.path,:position => self.last_position)
   end
@@ -46,6 +48,20 @@ class ConversionQueueItem < ActiveRecord::Base
     else
       self.time_remaining = seconds_or_array
     end
+  end
+
+
+  def generate_job!
+    self.delayed_job_id = self.delay(self.job_options).convert!
+    self.save!
+  end
+
+  def job_priority
+    self.position
+  end
+
+  def job_options
+    { :run_at => Time.zone.now, :priority => self.job_priority }
   end
   
 end

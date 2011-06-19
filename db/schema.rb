@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110303070830) do
+ActiveRecord::Schema.define(:version => 20110619035835) do
 
   create_table "conversion_queue_items", :force => true do |t|
     t.integer  "position"
@@ -20,6 +20,25 @@ ActiveRecord::Schema.define(:version => 20110303070830) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "media_length_seconds"
+    t.integer  "media_length_frames"
+    t.float    "media_fps"
+    t.integer  "media_width"
+    t.integer  "media_height"
+    t.integer  "delayed_job_id"
+  end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
