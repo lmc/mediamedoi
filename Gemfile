@@ -6,6 +6,8 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'juggernaut'
 
+gem 'delayed_job'
+
 # Views and templating
 gem 'haml'
 gem 'compass', ">= 0.10.6"

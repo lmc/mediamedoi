@@ -12,9 +12,10 @@ class MediaLibrariesController < ApplicationController
   def convert
     @path = params[:path]
     @media_library_file = MediaLibraryFile.new(@path)
-    ccc = Converter.convert(@media_library_file)
-    debugger
-    'sdf'
+    @conversion_queue_item = ConversionQueueItem.new_from_media_library_file(@media_library_file)
+    #ccc = Converter.convert(@media_library_file)
+    #debugger
+    #'sdf'
   end
   
 end

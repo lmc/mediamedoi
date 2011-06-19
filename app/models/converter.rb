@@ -22,30 +22,37 @@ class Converter
         unless chr == "\r"
           buffer << chr
         else
-          progress_line, buffer = buffer, ""
-          progress, time_remaining = parse_progress_line(progress_line)
+          progress_line = buffer
+          buffer = ""
 
-          conversion_queue_item.progress = progress
-          conversion_queue_item.time_remaining_seconds = time_remaining
+          progress_data = parse_progress_line(progress_line)
+          conversion_queue_item.progress = progress_data[:progress]
+          conversion_queue_item.time_remaining_seconds = progress_data[:time_remaining]
+
           conversion_queue_item.publish_updates
         end
       end
     end
+
+    conversion_queue_item.finalised
   end
   
   def self.parse_progress_line(line)
-    progress, time_remaining = "", nil
+    data = {}
     
     results = line.match(/\AEncoding: task \d+ of \d+, ([0-9\.]+)/)
-    progress = results[1] if results
+    data[:progress] = results[1] if results
     
-    results = line.match(/ETA (\d+)h(\d+)m(\d+)s\)\Z/)
+    results = line.match(/avg ([0-9\.]+) fps, ETA (\d+)h(\d+)m(\d+)s\)\Z/)
     if results
-      hours, minutes, seconds = *results[1..-1]
-      time_remaining = [hours, minutes, seconds]
+      data[:fps] = results[1]
+
+      hours, minutes, seconds = *results[2..-1]
+      data[:time_remaining] = [hours, minutes, seconds]
     end
     
-    [progress,time_remaining]
+    puts data.inspect
+    data
   end
   
   def self.make_options(options_hash)

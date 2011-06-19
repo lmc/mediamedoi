@@ -1,0 +1,4 @@
+%ul.conversion_queue_items.rounded
+  - @conversion_queue_items.each do |cqi|
+    %li.file{:data => {}}
+      = link_to cqi.media_library_file.name
