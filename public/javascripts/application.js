@@ -31,6 +31,13 @@ $('.media_library_list li.directory a').live('jqt:before_goto',function(event){
   });
 });
 
+$(window).ready(function(){
+  $('#queue').bind('pageAnimationStart',function(event,args){
+    if(args.direction != "in") return;
+    $('#queue .ajax_target').load('/conversion_queue_items ul');
+  });
+});
+
 function path_to_id(path){
   return hex_sha1(path);
 }

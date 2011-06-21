@@ -1,7 +1,14 @@
-.toolbar{:class => classes_for_media_library(@media_libraries)}
-  %h1= @media_libraries.name
-  = link_to 'Back', @media_libraries.up_path, :class => 'back'
-  = link_to 'Queue', '/conversion_queue_items', :class => 'button'
-#file_browser
-  = render 'media_library'
+#wrapper
+  .toolbar{:class => classes_for_media_library(@media_libraries)}
+    %h1= @media_libraries.name
+    = link_to 'Back', @media_libraries.up_path, :class => 'back'
+    = link_to 'Queue', '#queue', :class => 'button'
+  #file_browser
+    = render 'media_library'
+  
 #queue
+  .toolbar
+    %h1= "Queue"
+    = link_to 'Back', "#wrapper", :class => 'back'
+  .ajax_target
+    
