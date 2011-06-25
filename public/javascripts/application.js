@@ -25,7 +25,6 @@ $('.media_library_list li.directory a').live('jqt:before_goto',function(event){
   target.data('jqt-hash','#'+new_id);
 
   var url = '/media_libraries';
-  console.log(url);
   $.get(url,{path: path,from_browser: true},function(html){
     $('#'+new_id).html(html);
   });
