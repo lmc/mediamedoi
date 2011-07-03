@@ -6,6 +6,7 @@ deploy_to = "/Users/mint/Sites/#{application}/"
 symlink_dir = "/Library/WebServer/Documents/apps/"
 apache_dir = "/etc/apache2/sites/apps/"
 
+
 set :application, application
 set :repository,  "."
 
@@ -21,6 +22,11 @@ role :app, server                   # This may be the same as your `Web` server
 role :db,  server, :primary => true # This is where Rails migrations will run
 
 
+after "deploy:symlink", "deploy:generate_app_symlink"
+after "deploy:symlink", "deploy:generate_service_config_symlinks"
+
+
+
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
@@ -29,7 +35,7 @@ namespace :deploy do
   end
 
   task :generate_app_symlink, :roles => :app do
-  	run "#{try_sudo} ln -s #{deploy_to}current/public #{symlink_dir}#{application}"
+  	run "#{try_sudo} ln -shf #{deploy_to}current/public #{symlink_dir}#{application}"
   end
 
   task :generate_service_config_symlinks, :roles => :app do
