@@ -1,4 +1,0 @@
-RailsBaseURI /apps/mediamedoi
-<Directory /Library/WebServer/Documents/apps/mediamedoi>
-    Options -MultiViews
-</Directory>
