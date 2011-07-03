@@ -33,6 +33,6 @@ namespace :deploy do
   end
 
   task :generate_service_config_symlinks, :roles => :app do
-  	run "#{try_sudo} ln -s #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
+  	run "#{try_sudo} ln -shf #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
   end
 end
