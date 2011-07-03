@@ -25,4 +25,8 @@ namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{File.join(current_path,'tmp','restart.txt')}"
   end
+
+  task :generate_app_symlink, :roles => :app do
+  	run "#{try_sudo} ln -s #{deploy_to}current/ #{symlink_dir}#{application}"
+  end
 end
