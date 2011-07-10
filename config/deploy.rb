@@ -24,6 +24,7 @@ role :db,  server, :primary => true # This is where Rails migrations will run
 
 after "deploy:symlink", "deploy:generate_app_symlink"
 after "deploy:symlink", "deploy:generate_service_config_symlinks"
+after "deploy:symlink", "deploy:run_bundle"
 
 
 
@@ -40,5 +41,9 @@ namespace :deploy do
 
   task :generate_service_config_symlinks, :roles => :app do
   	run "ln -shf #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
+  end
+
+  task :run_bundle, :roles => :app do
+    run "rvmsudo rvm exec bundle install"
   end
 end

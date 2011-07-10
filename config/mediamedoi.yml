@@ -1,2 +1,5 @@
 development:
   media_library_root: /Users/luke/Documents/
+
+production:
+  media_library_root: /Users/luke/Documents/
