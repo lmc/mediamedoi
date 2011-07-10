@@ -22,7 +22,7 @@ class ConversionQueueItem < ActiveRecord::Base
   end
   
   def publish_updates
-    publish_juggernaut
+    #publish_juggernaut
     publish_model if should_publish_model?
   end
 
