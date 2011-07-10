@@ -44,6 +44,6 @@ namespace :deploy do
   end
 
   task :run_bundle, :roles => :app do
-    run "rvmsudo rvm exec bundle install"
+    run "cd #{deploy_to}current && rvmsudo rvm exec bundle install"
   end
 end

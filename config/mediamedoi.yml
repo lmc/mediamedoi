@@ -2,4 +2,4 @@ development:
   media_library_root: /Users/luke/Documents/
 
 production:
-  media_library_root: /Users/luke/Documents/
+  media_library_root: /Volumes/MEDIA/
