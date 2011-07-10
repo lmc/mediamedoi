@@ -1,1 +1,3 @@
-rvm ruby-1.9.2-tv1_9_2_0
+rvm ruby-1.9.2-tv1_9_2_0@mediamedoi
+GEM_HOME=`rvm ruby-1.9.2-tv1_9_2_0@mediamedoi; rvm gemdir`
+GEM_PATH=$GEM_HOME:$GEM_PATH
