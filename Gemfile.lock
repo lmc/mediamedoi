@@ -31,6 +31,14 @@ GEM
     archive-tar-minitar (0.5.2)
     arel (2.0.6)
     builder (2.1.2)
+    capistrano (2.6.0)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.14)
+      net-ssh-gateway (>= 1.1.0)
+    capistrano_rsync_with_remote_cache (2.4.0)
+      capistrano (>= 2.1.0)
     columnize (0.3.2)
     compass (0.10.6)
       haml (>= 3.0.4)
@@ -41,6 +49,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     haml (3.0.25)
+    highline (1.6.2)
     i18n (0.5.0)
     juggernaut (2.0.1)
       redis
@@ -52,6 +61,13 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    net-scp (1.0.4)
+      net-ssh (>= 1.99.1)
+    net-sftp (2.0.5)
+      net-ssh (>= 2.0.9)
+    net-ssh (2.1.4)
+    net-ssh-gateway (1.1.0)
+      net-ssh (>= 1.99.1)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -93,6 +109,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  capistrano
+  capistrano_rsync_with_remote_cache
   compass (>= 0.10.6)
   delayed_job
   haml
