@@ -15,5 +15,5 @@ gem 'haml'
 gem 'compass', ">= 0.10.6"
 
 group :development, :test do
-  gem 'ruby-debug19'
+  #gem 'ruby-debug19'
 end
