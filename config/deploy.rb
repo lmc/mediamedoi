@@ -6,6 +6,7 @@ deploy_to = "/Users/mint/Sites/#{application}/"
 symlink_dir = "/Library/WebServer/Documents/apps/"
 apache_dir = "/etc/apache2/sites/apps/"
 
+default_run_options[:pty] = true
 
 set :application, application
 set :repository,  "."
