@@ -2,8 +2,10 @@ development:
   media_library_root: /Users/luke/Documents/
   output_path: /Users/luke/Documents/Converted Videos/
   handbrake_path: /Applications/HandBrakeCLI
+  mount_url: 
 
 production:
   media_library_root: /Volumes/MEDIA/
   output_path: /Volumes/MEDIA/Converted Videos/
   handbrake_path: /Applications/HandBrakeCLI
+  mount_url: /apps/mediamedoi

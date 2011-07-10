@@ -54,6 +54,6 @@ namespace :install do
     run "mkdir #{deploy_to}/releases"
     run "mkdir #{deploy_to}/shared"
     run "mkdir #{deploy_to}/shared/cached-copy"
-    run "mkdir #{deploy_to}/shared/logs"
+    run "mkdir #{deploy_to}/shared/log"
   end
 end

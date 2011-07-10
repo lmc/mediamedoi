@@ -10,6 +10,8 @@
     = javascript_include_tag 'vendor/sha1'
     = javascript_include_tag 'rails'
     = javascript_include_tag 'application'
+    %script{:type => 'text/javascript'}
+      == var root_path = #{root_path.to_json.html_safe};
     = csrf_meta_tag
   %body#jqt
     = yield
