@@ -1,1 +1,6 @@
-rvm ruby-1.9.2-tv1_9_2_0
+
+if [[ -s "/Users/luke/.rvm/environments/ruby-1.9.2-tv1_9_2_0@mediamedoi" ]] ; then
+  . "/Users/luke/.rvm/environments/ruby-1.9.2-tv1_9_2_0@mediamedoi"
+else
+  rvm --create use  "ruby-1.9.2-tv1_9_2_0@mediamedoi"
+fi
