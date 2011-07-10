@@ -2,6 +2,7 @@ application = "mediamedoi"
 user = "mint"
 server = "192.168.0.5"
 deploy_to = "/Users/mint/Sites/#{application}/"
+rails_env = "production"
 
 symlink_dir = "/Library/WebServer/Documents/apps/"
 apache_dir = "/etc/apache2/sites/apps/"
@@ -25,6 +26,7 @@ role :db,  server, :primary => true # This is where Rails migrations will run
 after "deploy:symlink", "deploy:generate_app_symlink"
 after "deploy:symlink", "deploy:generate_service_config_symlinks"
 after "deploy:symlink", "deploy:run_bundle"
+after "deploy:symlink", "deploy:run_migrate"
 
 
 
@@ -45,6 +47,10 @@ namespace :deploy do
 
   task :run_bundle, :roles => :app do
     run "cd #{deploy_to}current && rvmsudo rvm exec bundle install --without=development,test"
+  end
+
+  task :run_migrate, :roles => :app do
+    run "cd #{deploy_to}current && rvm exec rake db:migrate RAILS_ENV=#{rails_env}"
   end
 end
 
