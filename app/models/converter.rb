@@ -1,7 +1,7 @@
 require 'open3'
 class Converter
-  BIN_PATH = '/Applications/HandBrakeCLI'
-  OUTPUT_PATH = '/Users/luke/Documents/Converted Videos/'
+  BIN_PATH = Mediamedoi::Application.app_config[:handbrake_path]
+  OUTPUT_PATH = Mediamedoi::Application.app_config[:output_path]
   DEFAULT_OPTIONS = {
     :preset => "\"iPhone & iPod Touch\""
   }

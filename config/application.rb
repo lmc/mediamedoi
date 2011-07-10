@@ -38,5 +38,8 @@ module Mediamedoi
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
+    cattr_accessor :app_config
+    self.app_config = HashWithIndifferentAccess.new(YAML.load_file(Rails.root.join('config','mediamedoi.yml'))[Rails.env])
   end
 end
