@@ -44,6 +44,16 @@ namespace :deploy do
   end
 
   task :run_bundle, :roles => :app do
-    run "cd #{deploy_to}current && rvmsudo rvm exec bundle install"
+    run "cd #{deploy_to}current && rvmsudo rvm exec bundle install --quiet --without=development,test"
+  end
+end
+
+namespace :install do
+  task :create_app_structure, :roles => :app do
+    run "mkdir #{deploy_to}"
+    run "mkdir #{deploy_to}/releases"
+    run "mkdir #{deploy_to}/shared"
+    run "mkdir #{deploy_to}/shared/cached-copy"
+    run "mkdir #{deploy_to}/shared/logs"
   end
 end

@@ -14,6 +14,6 @@ gem 'delayed_job', '2.1.4'
 gem 'haml'
 gem 'compass', ">= 0.10.6"
 
-#group :development, :test do
-#  gem 'ruby-debug19'
-#end
+group :development, :test do
+  gem 'ruby-debug19'
+end
