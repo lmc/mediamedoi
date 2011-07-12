@@ -45,6 +45,10 @@ namespace :deploy do
   	run "ln -shf #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
   end
 
+  task :generate_db_symlink, :roles => :app do
+    run "ln -shf #{deploy_to}shared/db/ #{deploy_to}current/db/sqlite"
+  end
+
   task :run_bundle, :roles => :app do
     run "cd #{deploy_to}current && rvmsudo rvm exec bundle install --without=development,test"
   end
@@ -61,5 +65,6 @@ namespace :install do
     run "mkdir #{deploy_to}/shared"
     run "mkdir #{deploy_to}/shared/cached-copy"
     run "mkdir #{deploy_to}/shared/log"
+    run "mkdir #{deploy_to}/shared/db"
   end
 end
