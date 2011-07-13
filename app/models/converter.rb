@@ -3,7 +3,9 @@ class Converter
   BIN_PATH = Mediamedoi::Application.app_config[:handbrake_path]
   OUTPUT_PATH = Mediamedoi::Application.app_config[:output_path]
   DEFAULT_OPTIONS = {
-    :preset => "\"iPhone & iPod Touch\""
+    :preset => '"iPhone 4"',
+    :subtitle_burn => true,
+    :format => 'mp4'
   }
   
   def self.convert(conversion_queue_item)
@@ -18,7 +20,7 @@ class Converter
     progress_line = ""
     buffer = ""
     Open3.popen3(cmd) do |stdin,stdout,stderr|
-      while chr = stdout.readchar
+      while !stdout.eof? && chr = stdout.readchar
         unless chr == "\r"
           buffer << chr
         else
@@ -34,7 +36,7 @@ class Converter
       end
     end
 
-    conversion_queue_item.finalised
+    conversion_queue_item.finalised!
   end
   
   def self.parse_progress_line(line)
@@ -56,7 +58,11 @@ class Converter
   end
   
   def self.make_options(options_hash)
-    options_hash.map { |option,value| "--#{option} #{value}"}.join(" ")
+    options_hash.map do |option,value|
+      option = option.to_s.dasherize
+      value = value === true ? "" : " #{value}"
+      "--#{option}#{value}"
+    end.join(" ")
   end
   
   #TODO: Sanitize this

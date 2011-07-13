@@ -20,6 +20,10 @@ class ConversionQueueItem < ActiveRecord::Base
   def convert!
     Converter.convert(self)
   end
+
+  def finalised!
+    #called when the conversion finishes
+  end
   
   def publish_updates
     #publish_juggernaut
