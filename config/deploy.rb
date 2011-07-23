@@ -12,6 +12,8 @@ god_dir = "/Users/mint/God/apps/"
 
 ping_url = "http://#{server}#{web_path}#{ping_path}"
 
+god_groups = ["mediamedoi-dj-high","mediamedoi-dj-normal"]
+
 set :application, application
 set :repository,  "."
 
@@ -34,6 +36,7 @@ after "deploy:symlink", "deploy:generate_service_config_symlinks"
 after "deploy:symlink", "deploy:generate_db_symlink"
 after "deploy:symlink", "deploy:run_bundle"
 after "deploy:symlink", "deploy:run_migrate"
+after "deploy:symlink", "deploy:restart_delayed_jobs"
 
 
 
@@ -63,6 +66,12 @@ namespace :deploy do
 
   task :run_migrate, :roles => :app do
     run "cd #{deploy_to}current && rvm exec rake db:migrate RAILS_ENV=#{rails_env}"
+  end
+
+  task :restart_delayed_jobs, :roles => :app do
+    god_groups.each do |group|
+      run "sudo god restart #{group}"
+    end
   end
 end
 
