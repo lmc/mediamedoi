@@ -5,15 +5,15 @@ worker_groups = {
   "high priority" => {
     "name" => "mediamedoi-dj-high-%d",
     "group" => "mediamedoi-dj-high",
-    "count" => 1,
-    "MIN_PRIORITY" => 0,
+    "count" => 3,
+    "MAX_PRIORITY" => 0,
     "SLEEP_DELAY" => 1
   },
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-normal",
-    "count" => 1,
-    "MAX_PRIORITY" => 1,
+    "count" => 2,
+    "MIN_PRIORITY" => 1,
     "SLEEP_DELAY" => 5
   }
 }
