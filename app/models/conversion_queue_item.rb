@@ -41,6 +41,11 @@ class ConversionQueueItem < ActiveRecord::Base
   end
 
   def should_publish_model?
+    puts "should publish_model?"
+    puts "Now: #{Time.zone.now.inspect}"
+    puts "self.updated_at: #{self.updated_at.inspect} (#{self.updated_at.to_i})"
+    puts "calcd: #{(Time.zone.now - self.updated_at.to_i)}"
+    puts "calcd: #{(Time.zone.now - self.updated_at.to_i)} >= #{MODEL_UPDATE_INTERVAL.ago}"
     (Time.zone.now - self.updated_at.to_i) >= MODEL_UPDATE_INTERVAL.ago
   end
   
