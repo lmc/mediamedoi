@@ -1,7 +1,9 @@
 rails_root = "/Users/mint/Sites/mediamedoi/current"
 rake = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/rake"
+rakefile = "#{rails_root}/Rakefile"
 
 worker_groups = {
+=begin
   "high priority" => {
     "name" => "mediamedoi-dj-high-%d",
     "group" => "mediamedoi-dj-high",
@@ -9,6 +11,7 @@ worker_groups = {
     "MIN_PRIORITY" => 0,
     "SLEEP_DELAY" => 1
   },
+=end
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-normal",
@@ -33,7 +36,7 @@ worker_groups.each_pair do |label,options|
 
       w.dir = rails_root
       w.env = env_vars
-      w.start = "#{rake} jobs:work RAILS_ENV=production"
+      w.start = "#{rake} -f #{rakefile} jobs:work RAILS_ENV=production"
 
       # restart if memory gets too high
       w.transition(:up, :restart) do |on|
