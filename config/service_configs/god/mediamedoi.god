@@ -1,18 +1,17 @@
-rails_root = File.join(File.dirname(File.absolute_path(__FILE__)),'..','..','..')
-puts rails_root
+rails_root = File.join(File.dirname(File.expand_path(__FILE__)),'..','..','..')
 
 worker_groups = {
   "high priority" => {
     "name" => "mediamedoi-dj-high-%d",
     "group" => "mediamedoi-dj-high",
-    "count" => 2,
+    "count" => 1,
     "MIN_PRIORITY" => 0,
     "SLEEP_DELAY" => 1
   },
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-high",
-    "count" => 2,
+    "count" => 1,
     "MAX_PRIORITY" => 1,
     "SLEEP_DELAY" => 5
   }
@@ -32,10 +31,11 @@ worker_groups.each_pair do |label,options|
       w.interval = 15.seconds
 
       w.dir = rails_root
-      w.env = cli_args
+      w.env = env_vars
       w.start = "rake jobs:work"
 
       # restart if memory gets too high
+=begin
       w.transition(:up, :restart) do |on|
         on.condition(:memory_usage) do |c|
           c.above = 300.megabytes
@@ -71,6 +71,7 @@ worker_groups.each_pair do |label,options|
           c.running = false
         end
       end
+=end
     end
     
   end

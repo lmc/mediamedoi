@@ -3,13 +3,19 @@ user = "mint"
 server = "192.168.0.5"
 deploy_to = "/Users/mint/Sites/#{application}/"
 rails_env = "production"
+web_path = "/apps/mediamedoi/"
+ping_path = "media_libraries"
 
 symlink_dir = "/Library/WebServer/Documents/apps/"
 apache_dir = "/etc/apache2/sites/apps/"
+god_dir = "/Users/mint/God/apps/"
 
+ping_url = "http://#{server}#{web_path}#{ping_path}"
 
 set :application, application
 set :repository,  "."
+
+set :keep_releases, 10
 
 set :scm, :git
 set :deploy_via, :rsync_with_remote_cache
@@ -25,6 +31,7 @@ role :db,  server, :primary => true # This is where Rails migrations will run
 
 after "deploy:symlink", "deploy:generate_app_symlink"
 after "deploy:symlink", "deploy:generate_service_config_symlinks"
+after "deploy:symlink", "deploy:generate_db_symlink"
 after "deploy:symlink", "deploy:run_bundle"
 after "deploy:symlink", "deploy:run_migrate"
 
@@ -42,7 +49,8 @@ namespace :deploy do
   end
 
   task :generate_service_config_symlinks, :roles => :app do
-  	run "ln -shf #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
+    run "ln -shf #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
+  	run "ln -shf #{deploy_to}current/config/service_configs/god/ #{god_dir}#{application}"
   end
 
   task :generate_db_symlink, :roles => :app do
