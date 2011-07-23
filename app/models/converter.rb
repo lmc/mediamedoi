@@ -7,6 +7,48 @@ class Converter
     :subtitle_burn => "1",
     :format => 'mp4'
   }
+
+  def self.scan(conversion_queue_item)
+    input = conversion_queue_item.media_library_file.filesystem_path
+    options = make_options({:input => esc(input),:scan => true})
+
+    cmd = "#{BIN_PATH} #{options}"
+
+    titles = cmd.scan(/\+ title (\d+):([\s\S]+)/m)
+    titles.each do |title|
+      index = title[0].to_i
+      data = title[1]
+
+      duration = data.scan(/\+ duration: (\d+):(\d+):(\d+)/)[0].map(&:to_i)
+      duration_i  = duration[2]
+      duration_i += duration[1].minutes
+      duration_i += duration[0].hours
+
+      video_data = data.scan(/\+ size: (\d+)x(\d+), pixel aspect: (\d+)\/(\d+), display aspect: ([0-9\.]+), ([0-9\.]+) fps/)[0]
+      video_width = video_data[0].to_i
+      video_height = video_data[1].to_i
+      video_pixel_ratio = Rational(video_data[2],video_data[3])
+      video_display_ratio = video_data[4].to_f
+      video_fps = video_data[5].to_f
+
+      #TODO: Handle chapter/audio/subtitle scanning
+=begin
+  + chapters:
+    + 1: cells 0->0, 0 blocks, duration 00:04:50
+    + 2: cells 0->0, 0 blocks, duration 00:01:29
+    + 3: cells 0->0, 0 blocks, duration 00:02:06
+    + 4: cells 0->0, 0 blocks, duration 00:04:54
+    + 5: cells 0->0, 0 blocks, duration 00:09:23
+    + 6: cells 0->0, 0 blocks, duration 00:00:34
+    + 7: cells 0->0, 0 blocks, duration 00:00:14
+    + 8: cells 0->0, 0 blocks, duration 00:00:04
+  + audio tracks:
+    + 1, Japanese (VORBIS) (2.0 ch) (iso639-2: jpn)
+  + subtitle tracks:
+    + 1, English (iso639-2: eng) (Text)(SSA)
+=end
+    end
+  end
   
   def self.convert(conversion_queue_item)
     input = conversion_queue_item.media_library_file.filesystem_path
