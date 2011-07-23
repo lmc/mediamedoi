@@ -1,4 +1,5 @@
 rails_root = "/Users/mint/Sites/mediamedoi/current"
+rake = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/rake"
 
 worker_groups = {
   "high priority" => {
@@ -32,7 +33,7 @@ worker_groups.each_pair do |label,options|
 
       w.dir = rails_root
       w.env = env_vars
-      w.start = "rvm exec rake jobs:work RAILS_ENV=production"
+      w.start = "#{rake} jobs:work RAILS_ENV=production"
 
       # restart if memory gets too high
       w.transition(:up, :restart) do |on|
