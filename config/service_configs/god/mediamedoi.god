@@ -1,4 +1,5 @@
 rails_root = File.join(File.dirname(File.expand_path(__FILE__)),'..','..','..')
+puts rails_root
 
 worker_groups = {
   "high priority" => {
@@ -10,7 +11,7 @@ worker_groups = {
   },
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
-    "group" => "mediamedoi-dj-high",
+    "group" => "mediamedoi-dj-normal",
     "count" => 1,
     "MAX_PRIORITY" => 1,
     "SLEEP_DELAY" => 5
@@ -35,7 +36,6 @@ worker_groups.each_pair do |label,options|
       w.start = "rvm exec rake jobs:work"
 
       # restart if memory gets too high
-=begin
       w.transition(:up, :restart) do |on|
         on.condition(:memory_usage) do |c|
           c.above = 300.megabytes
@@ -71,7 +71,6 @@ worker_groups.each_pair do |label,options|
           c.running = false
         end
       end
-=end
     end
     
   end
