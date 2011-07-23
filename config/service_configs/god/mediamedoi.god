@@ -1,5 +1,4 @@
-rails_root = File.join(File.dirname(File.expand_path(__FILE__)),'..','..','..')
-puts rails_root
+rails_root = "/Users/mint/Sites/mediamedoi/current"
 
 worker_groups = {
   "high priority" => {
@@ -33,7 +32,7 @@ worker_groups.each_pair do |label,options|
 
       w.dir = rails_root
       w.env = env_vars
-      w.start = "cd #{rails_root} && rvm exec rake jobs:work RAILS_ENV=production"
+      w.start = "rvm exec rake jobs:work RAILS_ENV=production"
 
       # restart if memory gets too high
       w.transition(:up, :restart) do |on|
