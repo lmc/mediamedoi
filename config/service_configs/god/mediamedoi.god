@@ -33,7 +33,7 @@ worker_groups.each_pair do |label,options|
       w.interval = 15.seconds
 
       w.dir = rails_root
-      #w.env = env_vars
+      w.env = env_vars
       w.start = "#{rake} jobs:work RAILS_ENV=production"
       w.log = "#{rails_root}/log/delayed_job/#{watch_name}.log"
 
