@@ -73,6 +73,11 @@ namespace :deploy do
       run "sudo god restart #{group}"
     end
   end
+
+  task :restart_god, :roles => :app do
+    run "sudo launchctl stop mint.god"
+    run "sudo launchctl start mint.god"
+  end
 end
 
 namespace :install do

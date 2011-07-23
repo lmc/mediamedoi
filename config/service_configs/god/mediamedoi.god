@@ -5,16 +5,16 @@ worker_groups = {
   "high priority" => {
     "name" => "mediamedoi-dj-high-%d",
     "group" => "mediamedoi-dj-high",
-    "count" => 2,
-    "MIN_PRIORITY" => "0",
-    "SLEEP_DELAY" => "1"
+    "count" => 1,
+    "MIN_PRIORITY" => 0,
+    "SLEEP_DELAY" => 1
   },
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-normal",
-    "count" => 2,
-    "MAX_PRIORITY" => "1",
-    "SLEEP_DELAY" => "5"
+    "count" => 1,
+    "MAX_PRIORITY" => 1,
+    "SLEEP_DELAY" => 5
   }
 }
 
@@ -22,7 +22,7 @@ worker_groups.each_pair do |label,options|
   name_format = options.delete("name")
   group = options.delete("group")
   count = options.delete("count")
-  env_vars = options
+  rake_args = options.merge("RAILS_ENV" => "production").map { |k,v| "#{k}=#{v}" }.join(" ")
 
   count.times do |i|
 
@@ -33,8 +33,7 @@ worker_groups.each_pair do |label,options|
       w.interval = 15.seconds
 
       w.dir = rails_root
-      w.env = env_vars
-      w.start = "#{rake} jobs:work RAILS_ENV=production"
+      w.start = "#{rake} jobs:work #{rake_args}"
       w.log = "#{rails_root}/log/delayed_job/#{watch_name}.log"
 
       # restart if memory gets too high
