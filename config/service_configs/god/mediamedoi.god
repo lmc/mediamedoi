@@ -22,7 +22,7 @@ worker_groups.each_pair do |label,options|
   name_format = options.delete("name")
   group = options.delete("group")
   count = options.delete("count")
-  env_vars = options.merge('RAILS_ENV' => 'production')
+  env_vars = options
 
   count.times do |i|
 
@@ -33,7 +33,7 @@ worker_groups.each_pair do |label,options|
 
       w.dir = rails_root
       w.env = env_vars
-      w.start = "rvm exec rake jobs:work"
+      w.start = "rvm exec rake jobs:work RAILS_ENV=production"
 
       # restart if memory gets too high
       w.transition(:up, :restart) do |on|
