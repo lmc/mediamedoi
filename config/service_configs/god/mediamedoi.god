@@ -29,14 +29,16 @@ worker_groups.each_pair do |label,options|
 
   count.times do |i|
 
+    watch_name = name_format % i
     God.watch do |w|
-      w.name = name_format % i
+      w.name = watch_name
       w.group = group
       w.interval = 15.seconds
 
       w.dir = rails_root
       w.env = env_vars
       w.start = "#{rake} -f #{rakefile} jobs:work RAILS_ENV=production"
+      w.log = "#{rails_root}/log/delayed_job/#{watch_name}.log"
 
       # restart if memory gets too high
       w.transition(:up, :restart) do |on|
