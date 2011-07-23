@@ -33,7 +33,7 @@ worker_groups.each_pair do |label,options|
 
       w.dir = rails_root
       w.env = env_vars
-      w.start = "rvm exec rake jobs:work RAILS_ENV=production"
+      w.start = "cd #{rails_root} && rvm exec rake jobs:work RAILS_ENV=production"
 
       # restart if memory gets too high
       w.transition(:up, :restart) do |on|
