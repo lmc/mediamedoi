@@ -1,23 +1,20 @@
 rails_root = "/Users/mint/Sites/mediamedoi/current"
 rake = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/rake"
-rakefile = "#{rails_root}/Rakefile"
 
 worker_groups = {
-=begin
   "high priority" => {
     "name" => "mediamedoi-dj-high-%d",
     "group" => "mediamedoi-dj-high",
-    "count" => 1,
-    "MIN_PRIORITY" => 0,
-    "SLEEP_DELAY" => 1
+    "count" => 2,
+    "MIN_PRIORITY" => "0",
+    "SLEEP_DELAY" => "1"
   },
-=end
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-normal",
-    "count" => 1,
-    "MAX_PRIORITY" => 1,
-    "SLEEP_DELAY" => 5
+    "count" => 2,
+    "MAX_PRIORITY" => "1",
+    "SLEEP_DELAY" => "5"
   }
 }
 
@@ -37,7 +34,7 @@ worker_groups.each_pair do |label,options|
 
       w.dir = rails_root
       #w.env = env_vars
-      w.start = "#{rake} -f #{rakefile} jobs:work RAILS_ENV=production"
+      w.start = "#{rake} jobs:work RAILS_ENV=production"
       w.log = "#{rails_root}/log/delayed_job/#{watch_name}.log"
 
       # restart if memory gets too high
