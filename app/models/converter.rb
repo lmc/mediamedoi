@@ -4,7 +4,7 @@ class Converter
   OUTPUT_PATH = Mediamedoi::Application.app_config[:output_path]
   DEFAULT_OPTIONS = {
     :preset => '"iPhone 4"',
-    :subtitle_burn => true,
+    :subtitle_burn => "1",
     :format => 'mp4'
   }
   
