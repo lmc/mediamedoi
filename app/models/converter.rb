@@ -2,9 +2,13 @@ require 'open3'
 class Converter
   BIN_PATH = Mediamedoi::Application.app_config[:handbrake_path]
   OUTPUT_PATH = Mediamedoi::Application.app_config[:output_path]
+  SUBTITLE_INDEX = 1
   DEFAULT_OPTIONS = {
     :preset => '"iPhone 4"',
-    :subtitle_burn => "1",
+    :subtitle_forced => SUBTITLE_INDEX,
+    :subtitle => SUBTITLE_INDEX,
+    :subtitle_burn => SUBTITLE_INDEX,
+    :subtitle_default => SUBTITLE_INDEX,
     :format => 'mp4'
   }
 
