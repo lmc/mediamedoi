@@ -12,7 +12,7 @@ worker_groups = {
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-normal",
-    "count" => 2,
+    "count" => 1,
     "MIN_PRIORITY" => 1,
     "SLEEP_DELAY" => 5
   }
