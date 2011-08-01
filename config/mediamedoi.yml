@@ -5,7 +5,7 @@ development:
   mount_url: 
 
 production:
-  media_library_root: /Volumes/MEDIA/
-  output_path: /Volumes/MEDIA/Converted Videos/
+  media_library_root: /Volumes/Drobo/
+  output_path: /Volumes/Drobo/Converted Videos/
   handbrake_path: /Applications/HandBrakeCLI
   mount_url: /apps/mediamedoi
