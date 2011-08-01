@@ -62,6 +62,8 @@ class Converter
     puts cmd
     puts "---"
     puts
+
+    conversion_queue_item.on_start!
     
     progress_line = ""
     buffer = ""
@@ -82,7 +84,7 @@ class Converter
       end
     end
 
-    conversion_queue_item.finalised!
+    conversion_queue_item.on_finish!
   end
   
   def self.parse_progress_line(line)

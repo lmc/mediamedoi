@@ -38,6 +38,24 @@ $(window).ready(function(){
   });
 });
 
+var queue_poller_handle = null;
+var queue_poller = function(){
+  if(window.location.hash != '#queue') return;
+
+  $.get(root_path+'/conversion_queue_items.json',function(queue_items){
+
+    $.each(queue_items,function(_i,queue_item){
+      queue_item = queue_item.conversion_queue_item;
+      var element = $("li#conversion_queue_item_"+queue_item.id);
+      element.find('.progress').html(queue_item.progress);
+      element.find('.time_remaining').html(queue_item.time_remaining);
+    });
+
+  });
+};
+queue_poller_handle = setInterval(queue_poller,15000); //FIXME: DRY this
+
+
 function path_to_id(path){
   return hex_sha1(path);
 }

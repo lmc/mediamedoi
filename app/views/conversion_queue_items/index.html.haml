@@ -1,4 +1,6 @@
 %ul.conversion_queue_items.rounded
   - @conversion_queue_items.each do |cqi|
-    %li.file{:data => {}}
+    %li[cqi]{:data => {}}
       = link_to cqi.media_library_file.name
+      .time_remaining
+      .progress

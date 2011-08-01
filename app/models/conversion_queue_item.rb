@@ -5,6 +5,9 @@ class ConversionQueueItem < ActiveRecord::Base
 
   after_create :generate_job!
 
+  STATUSES = ['queued','processing','failed','completed'].freeze
+  DEFAULT_STATUS = STATUSES[0]
+
   def self.new_from_media_library_file(media_library_file)
     self.new(:file_path => media_library_file.path,:position => self.last_position)
   end
@@ -21,8 +24,16 @@ class ConversionQueueItem < ActiveRecord::Base
     Converter.convert(self)
   end
 
-  def finalised!
-    #called when the conversion finishes
+  def on_start!
+    self.started_at = Time.zone.now
+    self.status = 'processing'
+    self.save!
+  end
+
+  def on_finish!
+    self.finished_at = Time.zone.now
+    self.status = 'completed'
+    self.save!
   end
   
   def publish_updates

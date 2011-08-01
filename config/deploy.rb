@@ -53,7 +53,7 @@ namespace :deploy do
 
   task :generate_service_config_symlinks, :roles => :app do
     run "ln -shf #{deploy_to}current/config/service_configs/apache/ #{apache_dir}#{application}"
-  	run "ln -shf #{deploy_to}current/config/service_configs/god/ #{god_dir}#{application}"
+    run "ln -shf #{deploy_to}current/config/service_configs/god/ #{god_dir}#{application}"
   end
 
   task :generate_db_symlink, :roles => :app do
