@@ -25,7 +25,6 @@ $('.media_library_list li.directory a').live('jqt:before_goto',function(event){
   target.data('jqt-hash','#'+new_id);
 
   var url = root_path+'/media_libraries';
-  console.log(url);
   $.get(url,{path: path,from_browser: true},function(html){
     $('#'+new_id).html(html);
   });
@@ -47,14 +46,25 @@ var queue_poller = function(){
     $.each(queue_items,function(_i,queue_item){
       queue_item = queue_item.conversion_queue_item;
       var element = $("li#conversion_queue_item_"+queue_item.id);
-      element.find('.progress').html(queue_item.progress);
-      element.find('.time_remaining').html(queue_item.time_remaining);
+      element.find('.progress').html( queue_item.progress+"%" );
+      element.find('.time_remaining').html( seconds_formatted(queue_item.time_remaining) );
     });
 
   });
 };
-queue_poller_handle = setInterval(queue_poller,15000); //FIXME: DRY this
+queue_poller_handle = setInterval(queue_poller,3000); //FIXME: DRY this
 
+function seconds_formatted(seconds){
+  var hours   = parseInt(seconds / 3600) % 24;
+  var minutes = parseInt(seconds / 60)   % 60;
+  var seconds = parseInt(seconds % 60);
+
+  if(hours < 10)   hours = "0"+hours;
+  if(minutes < 10) minutes = "0"+minutes;
+  if(seconds < 10) seconds = "0"+seconds;
+
+  return hours+":"+minutes+":"+seconds;
+}
 
 function path_to_id(path){
   return hex_sha1(path);

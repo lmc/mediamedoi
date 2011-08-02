@@ -1,6 +1,6 @@
 class ConversionQueueItem < ActiveRecord::Base
   JUGGERNAUT_CHANNEL = "global"
-  MODEL_UPDATE_INTERVAL = 15.seconds
+  MODEL_UPDATE_INTERVAL = 3.seconds
   validates_presence_of :file_path
 
   after_create :generate_job!
