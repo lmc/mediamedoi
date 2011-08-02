@@ -5,6 +5,8 @@ class ConversionQueueItem < ActiveRecord::Base
 
   after_create :generate_job!
 
+  MINIMUM_PRIORITY = 100
+
   STATUSES = ['queued','processing','failed','completed'].freeze
   DEFAULT_STATUS = STATUSES[0]
 
@@ -74,7 +76,7 @@ class ConversionQueueItem < ActiveRecord::Base
   end
 
   def job_priority
-    self.position
+    self.position + MINIMUM_PRIORITY
   end
 
   def job_options

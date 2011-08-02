@@ -6,14 +6,16 @@ worker_groups = {
     "name" => "mediamedoi-dj-high-%d",
     "group" => "mediamedoi-dj-high",
     "count" => 3,
-    "MAX_PRIORITY" => 0,
+    "MIN_PRIORITY" => 0,
+    "MAX_PRIORITY" => 99,
     "SLEEP_DELAY" => 1
   },
   "lower priority" => {
     "name" => "mediamedoi-dj-normal-%d",
     "group" => "mediamedoi-dj-normal",
     "count" => 1,
-    "MIN_PRIORITY" => 1,
+    "MIN_PRIORITY" => 100,
+    "MAX_PRIORITY" => 1000,
     "SLEEP_DELAY" => 5
   }
 }
