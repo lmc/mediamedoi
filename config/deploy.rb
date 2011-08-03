@@ -6,6 +6,10 @@ rails_env = "production"
 web_path = "/apps/mediamedoi/"
 ping_path = "media_libraries"
 
+if ENV["EXTERNAL"]
+  server, ssh_options[:port] = *ENV["EXTERNAL"].split(':')
+end
+
 symlink_dir = "/Library/WebServer/Documents/apps/"
 apache_dir = "/etc/apache2/sites/apps/"
 god_dir = "/Users/mint/God/apps/"
@@ -75,6 +79,7 @@ namespace :deploy do
   end
 
   task :restart_god, :roles => :app do
+    run "sudo god terminate"
     run "sudo launchctl stop mint.god"
     run "sudo launchctl start mint.god"
   end

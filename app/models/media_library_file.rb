@@ -9,7 +9,7 @@ class MediaLibraryFile
     File.basename(path)
   end
   
-  def filesystem_path
+  def filesystem_path(root = MediaLibrary::ROOT)
     File.join(MediaLibrary::ROOT,path)
   end
   

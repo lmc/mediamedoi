@@ -17,6 +17,21 @@ worker_groups = {
     "MIN_PRIORITY" => 100,
     "MAX_PRIORITY" => 1000,
     "SLEEP_DELAY" => 5
+  },
+
+  #Assumptions for remote workers:
+  #Mapped network drives as:
+  #  x: read,  support files (handbrakecli bin)
+  #  y: write, output folder
+  #  z: read,  input folder, should be the same as media_library_root in app config
+  "lower priority remote" => {
+    "name" => "mediamedoi-dj-normal-remote-%d",
+    "group" => "mediamedoi-dj-normal",
+    "count" => 1,
+    "MIN_PRIORITY" => 100,
+    "MAX_PRIORITY" => 1000,
+    "SLEEP_DELAY" => 5,
+    "REMOTE_ADDRESS" => "handbrake@192.168.0.35" #FIXME: Real ip!
   }
 }
 
@@ -74,7 +89,45 @@ worker_groups.each_pair do |label,options|
           c.running = false
         end
       end
+
+      # if it's a remote job, only run the local worker when the host is reachable
+      run_on_remote_host(w,options["REMOTE_ADDRESS"]) if options["REMOTE_ADDRESS"]
     end
     
   end
+end
+
+def run_on_remote_host(watch,ip_address)
+  require 'timeout'
+
+  watch.start_if do |start|
+    start.condition(:lambda) do |condition|
+      condition.interval = 1.minute
+      condition.lambda = lambda do
+        begin
+          Timeout.timeout(3) {
+            `ssh #{ip_address} echo "im_really_running"` =~ /im_really_running/
+          }
+        rescue Timeout::Error
+          false
+        end
+      end
+    end
+  end
+
+  watch.stop_if do |stop|
+    start.condition(:lambda) do |condition|
+      condition.interval = 15.seconds
+      condition.lambda = lambda do
+        begin
+          Timeout.timeout(3) {
+            `ssh #{ip_address} echo "im_really_running"` !~ /im_really_running/ #if command doesn't run properly, shut down
+          }
+        rescue Timeout::Error
+          true #timeout, shut down
+        end
+      end
+    end
+  end
+
 end
