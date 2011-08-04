@@ -21,17 +21,17 @@ worker_groups = {
 
   #Assumptions for remote workers:
   #Mapped network drives as:
-  #  x: read,  support files (handbrakecli bin)
-  #  y: write, output folder
-  #  z: read,  input folder, should be the same as media_library_root in app config
+  #  q: read,  support files (handbrakecli bin)
+  #  r: write, output folder
+  #  s: read,  input folder, should be the same as media_library_root in app config
   "lower priority remote" => {
-    "name" => "mediamedoi-dj-normal-remote-%d",
-    "group" => "mediamedoi-dj-normal",
+    "name" => "mediamedoi-dj-normal-remote-%host",
+    "group" => "mediamedoi-dj-normal-remote",
     "count" => 1,
     "MIN_PRIORITY" => 100,
     "MAX_PRIORITY" => 1000,
     "SLEEP_DELAY" => 5,
-    "REMOTE_ADDRESS" => "handbrake@192.168.0.35" #FIXME: Real ip!
+    "REMOTE_ADDRESS" => "Barry@192.168.0.47"
   }
 }
 
@@ -44,6 +44,7 @@ worker_groups.each_pair do |label,options|
   count.times do |i|
 
     watch_name = name_format % i
+    watch_name.gsub!(/%host/,options["REMOTE_ADDRESS"].downcase.gsub(/[^A-Z0-9]/,'-')) if options["REMOTE_ADDRESS"]
     God.watch do |w|
       w.name = watch_name
       w.group = group

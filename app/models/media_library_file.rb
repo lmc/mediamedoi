@@ -10,7 +10,7 @@ class MediaLibraryFile
   end
   
   def filesystem_path(root = MediaLibrary::ROOT)
-    File.join(MediaLibrary::ROOT,path)
+    File.join(root,path)
   end
   
   def directory?

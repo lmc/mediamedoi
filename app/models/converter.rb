@@ -53,21 +53,27 @@ class Converter
 =end
     end
   end
+
+  def self.unix_to_windows_path(unix_path)
+    unix_path.gsub(/\//,'\\')
+  end
   
   def self.convert(conversion_queue_item)
+    cmd_prefix = ""
     bin_path = BIN_PATH
     input = conversion_queue_item.media_library_file.filesystem_path
     output = File.join(OUTPUT_PATH,conversion_queue_item.media_library_file.name)
 
     #if we're running remotely, rewrite for the remote host's mapped network drives
     if ENV["REMOTE_ADDRESS"]
-      bin_path = "x:/HandBrakeCLI.exe"
-      input = conversion_queue_item.media_library_file.filesystem_path("z:")
-      output = File.join("y:",conversion_queue_item.media_library_file.name)
+      cmd_prefix = "ssh #{ENV["REMOTE_ADDRESS"]} "
+      bin_path = "/cygdrive/q/HandBrakeCLI.exe"
+      input  = unix_to_windows_path( conversion_queue_item.media_library_file.filesystem_path("s:/") )
+      output = unix_to_windows_path( File.join("r:",conversion_queue_item.media_library_file.name) )
     end
 
     options = make_options({:input => esc(input),:output => esc(output)}.merge(DEFAULT_OPTIONS))
-    cmd = "#{BIN_PATH} #{options}"
+    cmd = "#{cmd_prefix} #{bin_path} #{options}"
     puts cmd
     puts "---"
     puts
