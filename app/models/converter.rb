@@ -55,7 +55,8 @@ class Converter
   end
 
   def self.unix_to_windows_path(unix_path)
-    unix_path.gsub(/\//,'\\')
+    #this might look like some sort of sick joke but i assure you it's necessary 
+    unix_path.gsub(/\//,'\\\\\\\\\\\\\\\\').gsub(/ /,'\\\\\\\\ ')
   end
   
   def self.convert(conversion_queue_item)
@@ -66,7 +67,7 @@ class Converter
 
     #if we're running remotely, rewrite for the remote host's mapped network drives
     if ENV["REMOTE_ADDRESS"]
-      cmd_prefix = "ssh #{ENV["REMOTE_ADDRESS"]} "
+      cmd_prefix = "ssh #{ENV["REMOTE_ADDRESS"]} -t "
       bin_path = "/cygdrive/q/HandBrakeCLI.exe"
       input  = unix_to_windows_path( conversion_queue_item.media_library_file.filesystem_path("s:/") )
       output = unix_to_windows_path( File.join("r:",conversion_queue_item.media_library_file.name) )
@@ -82,7 +83,8 @@ class Converter
     
     progress_line = ""
     buffer = ""
-    Open3.popen3(cmd) do |stdin,stdout,stderr|
+
+    inner = lambda do |stdin,stdout,stderr|
       while !stdout.eof? && chr = stdout.readchar
         unless chr == "\r"
           buffer << chr
@@ -98,6 +100,8 @@ class Converter
         end
       end
     end
+
+    Open3.popen3(cmd) { |stdin,stdout,stderr| inner.call(stdin,stdout,stderr) }
 
     conversion_queue_item.on_finish!
   end
