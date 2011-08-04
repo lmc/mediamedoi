@@ -25,7 +25,7 @@ worker_groups = {
   #  r: write, output folder
   #  s: read,  input folder, should be the same as media_library_root in app config
   "lower priority remote" => {
-    "name" => "mediamedoi-dj-normal-remote-%host",
+    "name" => "mediamedoi-dj-normal-remote-!host",
     "group" => "mediamedoi-dj-normal-remote",
     "count" => 1,
     "MIN_PRIORITY" => 100,
@@ -34,6 +34,56 @@ worker_groups = {
     "REMOTE_ADDRESS" => "Barry@192.168.0.47"
   }
 }
+
+
+
+def run_on_remote_host(watch,ip_address)
+  require 'timeout'
+
+#FIXME: Maybe have god run a daemon to see if the job worker should be online, using `god start [name]`
+=begin
+  watch.start_if do |start|
+    start.condition(:lambda) do |condition|
+      condition.interval = 15.seconds
+      condition.lambda = lambda do
+        begin
+          Timeout.timeout(3) {
+            puts "start_if:"
+            puts `ssh #{ip_address} echo "im_really_running"`
+            `ssh #{ip_address} echo "im_really_running"` =~ /im_really_running/
+          }
+        rescue Timeout::Error
+          false
+        end
+      end
+    end
+  end
+
+  watch.stop_if do |stop|
+    stop.condition(:lambda) do |condition|
+      condition.interval = 15.seconds
+      condition.lambda = lambda do
+        begin
+          Timeout.timeout(3) {
+            `ssh #{ip_address} echo "im_really_running"` !~ /im_really_running/ #if command doesn't run properly, shut down
+          }
+        rescue Timeout::Error
+          true #timeout, shut down
+        end
+      end
+    end
+  end
+
+  # start if process is not running
+  watch.transition(:stop, :start) do |on|
+    on.condition(:process_running) do |c|
+      c.running = false
+    end
+  end
+=end
+
+end
+
 
 worker_groups.each_pair do |label,options|
   name_format = options.delete("name")
@@ -44,7 +94,7 @@ worker_groups.each_pair do |label,options|
   count.times do |i|
 
     watch_name = name_format % i
-    watch_name.gsub!(/%host/,options["REMOTE_ADDRESS"].downcase.gsub(/[^A-Z0-9]/,'-')) if options["REMOTE_ADDRESS"]
+    watch_name.gsub!(/\!host/,options["REMOTE_ADDRESS"].downcase.gsub(/[^A-Z0-9]/i,'-')) if options["REMOTE_ADDRESS"]
     God.watch do |w|
       w.name = watch_name
       w.group = group
@@ -98,37 +148,3 @@ worker_groups.each_pair do |label,options|
   end
 end
 
-def run_on_remote_host(watch,ip_address)
-  require 'timeout'
-
-  watch.start_if do |start|
-    start.condition(:lambda) do |condition|
-      condition.interval = 1.minute
-      condition.lambda = lambda do
-        begin
-          Timeout.timeout(3) {
-            `ssh #{ip_address} echo "im_really_running"` =~ /im_really_running/
-          }
-        rescue Timeout::Error
-          false
-        end
-      end
-    end
-  end
-
-  watch.stop_if do |stop|
-    start.condition(:lambda) do |condition|
-      condition.interval = 15.seconds
-      condition.lambda = lambda do
-        begin
-          Timeout.timeout(3) {
-            `ssh #{ip_address} echo "im_really_running"` !~ /im_really_running/ #if command doesn't run properly, shut down
-          }
-        rescue Timeout::Error
-          true #timeout, shut down
-        end
-      end
-    end
-  end
-
-end
