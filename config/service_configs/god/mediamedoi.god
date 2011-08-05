@@ -1,4 +1,5 @@
 rails_root = "/Users/mint/Sites/mediamedoi/current"
+ruby = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/ruby"
 rake = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/rake"
 
 worker_groups = {
@@ -38,49 +39,6 @@ worker_groups = {
 
 
 def run_on_remote_host(watch,ip_address)
-  require 'timeout'
-
-#FIXME: Maybe have god run a daemon to see if the job worker should be online, using `god start [name]`
-=begin
-  watch.start_if do |start|
-    start.condition(:lambda) do |condition|
-      condition.interval = 15.seconds
-      condition.lambda = lambda do
-        begin
-          Timeout.timeout(3) {
-            puts "start_if:"
-            puts `ssh #{ip_address} echo "im_really_running"`
-            `ssh #{ip_address} echo "im_really_running"` =~ /im_really_running/
-          }
-        rescue Timeout::Error
-          false
-        end
-      end
-    end
-  end
-
-  watch.stop_if do |stop|
-    stop.condition(:lambda) do |condition|
-      condition.interval = 15.seconds
-      condition.lambda = lambda do
-        begin
-          Timeout.timeout(3) {
-            `ssh #{ip_address} echo "im_really_running"` !~ /im_really_running/ #if command doesn't run properly, shut down
-          }
-        rescue Timeout::Error
-          true #timeout, shut down
-        end
-      end
-    end
-  end
-
-  # start if process is not running
-  watch.transition(:stop, :start) do |on|
-    on.condition(:process_running) do |c|
-      c.running = false
-    end
-  end
-=end
 
 end
 
@@ -99,6 +57,8 @@ worker_groups.each_pair do |label,options|
       w.name = watch_name
       w.group = group
       w.interval = 15.seconds
+
+      w.uid = "mint"
 
       w.dir = rails_root
       w.start = "#{rake} jobs:work #{rake_args}"
@@ -141,8 +101,28 @@ worker_groups.each_pair do |label,options|
         end
       end
 
-      # if it's a remote job, only run the local worker when the host is reachable
-      run_on_remote_host(w,options["REMOTE_ADDRESS"]) if options["REMOTE_ADDRESS"]
+    end
+
+    #if this is a remote worker, start up a process to start/stop it when the host comes online/offline
+    if options["REMOTE_ADDRESS"]
+      God.watch do |w|
+        w.name = watch_name.gsub(/remote/,'monitor-remote')
+        w.group = group.gsub(/remote/,'monitor-remote')
+        w.interval = 15.seconds
+
+        w.uid = "mint"
+
+        w.dir = rails_root
+        w.start = "#{ruby} script/monitor_worker_host #{options["REMOTE_ADDRESS"]} #{watch_name}"
+        w.log = "#{rails_root}/log/delayed_job/monitor_#{watch_name}.log"
+     
+        # start if process is not running
+        w.transition(:up, :start) do |on|
+          on.condition(:process_running) do |c|
+            c.running = false
+          end
+        end
+      end
     end
     
   end

@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+#./monitor_worker_host user@host god_watch_name
+require 'timeout'
+
+def host_up?(user_at_host)
+  begin
+    Timeout.timeout(8) {
+      !!(`ssh #{user_at_host} echo "im_really_running"` =~ /im_really_running/)
+    }
+  rescue Timeout::Error
+    false
+  end
+end
+
+def worker_up?(god_watch_name)
+  !!(`sudo god status #{god_watch_name}` =~ /#{god_watch_name}: up/)
+end
+
+user_at_host, god_watch_name = *ARGV
+sleep_time = 60
+
+loop do
+  host_up = host_up?(user_at_host)
+  worker_up = worker_up?(god_watch_name)
+
+  puts "#{Time.now}: host_up: #{host_up.inspect} worker_up: #{worker_up.inspect}"
+
+  if host_up && !worker_up
+    puts "Starting..."
+    puts `sudo god start #{god_watch_name}`
+  elsif !host_up && worker_up
+    puts "Stopping..."
+    puts `sudo god stop #{god_watch_name}`
+  end
+
+  sleep sleep_time
+end
