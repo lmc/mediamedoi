@@ -54,9 +54,9 @@ class Converter
     end
   end
 
-  def self.unix_to_windows_path(unix_path)
+  def self.unix_to_windows_param(unix_path)
     #this might look like some sort of sick joke but i assure you it's necessary 
-    unix_path.gsub(/\//,'\\\\\\\\\\\\\\\\').gsub(/ /,'\\\\\\\\ ')
+    unix_path.gsub(/\//,'\\\\\\\\\\\\\\\\').gsub(/ /,'\\\\\\\\ ').gsub(/\(/,'\\(').gsub(/\)/,'\\)')
   end
   
   def self.convert(conversion_queue_item)
@@ -64,16 +64,17 @@ class Converter
     bin_path = BIN_PATH
     input = conversion_queue_item.media_library_file.filesystem_path
     output = File.join(OUTPUT_PATH,conversion_queue_item.media_library_file.name)
+    options = make_options({:input => esc(input),:output => esc(output)}.merge(DEFAULT_OPTIONS))
 
     #if we're running remotely, rewrite for the remote host's mapped network drives
     if ENV["REMOTE_ADDRESS"]
       cmd_prefix = "ssh #{ENV["REMOTE_ADDRESS"]} -t "
       bin_path = "/cygdrive/q/HandBrakeCLI.exe"
-      input  = unix_to_windows_path( conversion_queue_item.media_library_file.filesystem_path("s:/") )
-      output = unix_to_windows_path( File.join("r:",conversion_queue_item.media_library_file.name) )
+      input  = conversion_queue_item.media_library_file.filesystem_path("s:/")
+      output = File.join("r:",conversion_queue_item.media_library_file.name)
+      options = make_options({:input => esc(input),:output => esc(output)}.merge(DEFAULT_OPTIONS),:escape_windows => true)
     end
 
-    options = make_options({:input => esc(input),:output => esc(output)}.merge(DEFAULT_OPTIONS))
     cmd = "#{cmd_prefix} #{bin_path} #{options}"
     puts cmd
     puts "---"
@@ -120,15 +121,24 @@ class Converter
       data[:time_remaining] = [hours, minutes, seconds]
     end
     
-    puts data.inspect
     data
   end
   
-  def self.make_options(options_hash)
+  def self.make_options(options_hash,options_options = {})
+    options_options.reverse_merge!(:escape_windows => false)
     options_hash.map do |option,value|
       option = option.to_s.dasherize
-      value = value === true ? "" : " #{value}"
-      "--#{option}#{value}"
+      value = value === true ? "" : value
+
+      if options_options[:escape_windows]
+        value = unix_to_windows_param(value.to_s)
+      end
+
+      if option == 'output' && options_hash[:format]
+        value.gsub!(/\.(\w+)\"$/,".#{options_hash[:format]}\"")
+      end
+
+      "--#{option} #{value}"
     end.join(" ")
   end
   
