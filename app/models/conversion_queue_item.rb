@@ -21,6 +21,15 @@ class ConversionQueueItem < ActiveRecord::Base
   def media_library_file
     MediaLibraryFile.new(self.file_path)
   end
+
+  def scan!
+    Converter.scan(self)
+  end
+
+  def after_scan
+    self.delayed_job_id = self.delay(self.job_options).convert!
+    self.save!
+  end
   
   def convert!
     self.class.remote_job_before if ENV["REMOTE_ADDRESS"]
@@ -72,12 +81,16 @@ class ConversionQueueItem < ActiveRecord::Base
 
 
   def generate_job!
-    self.delayed_job_id = self.delay(self.job_options).convert!
+    self.delayed_job_id = self.delay(self.scan_job_options).scan!
     self.save!
   end
 
   def job_priority
     self.position + MINIMUM_PRIORITY
+  end
+
+  def scan_job_options
+    { :run_at => Time.zone.now, :priority => 0 }
   end
 
   def job_options

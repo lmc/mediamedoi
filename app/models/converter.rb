@@ -17,8 +17,12 @@ class Converter
     options = make_options({:input => esc(input),:scan => true})
 
     cmd = "#{BIN_PATH} #{options}"
+    puts cmd
+    cmd = `#{cmd}`
+    puts cmd
 
     titles = cmd.scan(/\+ title (\d+):([\s\S]+)/m)
+    puts titles.inspect
     titles.each do |title|
       index = title[0].to_i
       data = title[1]
@@ -34,6 +38,8 @@ class Converter
       video_pixel_ratio = Rational(video_data[2],video_data[3])
       video_display_ratio = video_data[4].to_f
       video_fps = video_data[5].to_f
+
+      duration_frames = (video_fps * duration_i).round
 
       #TODO: Handle chapter/audio/subtitle scanning
 =begin
@@ -51,7 +57,17 @@ class Converter
   + subtitle tracks:
     + 1, English (iso639-2: eng) (Text)(SSA)
 =end
+      conversion_attributes = {
+        :media_width  => video_width,
+        :media_height => video_height,
+        :media_fps    => video_fps,
+        :media_length_seconds => duration_i,
+        :media_length_frames  => duration_frames        
+      }
+      puts conversion_attributes.inspect
+      conversion_queue_item.update_attributes(conversion_attributes)
     end
+    conversion_queue_item.after_scan
   end
 
   def self.unix_to_windows_param(unix_path)
