@@ -1,20 +1,21 @@
 rails_root = "/Users/mint/Sites/mediamedoi/current"
 ruby = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/ruby"
 rake = "/usr/local/rvm/wrappers/ruby-1.9.2-tv1_9_2_0/rake"
+run_as = "mint"
 
 worker_groups = {
-  "high priority" => {
-    "name" => "mediamedoi-dj-high-%d",
-    "group" => "mediamedoi-dj-high",
+  "workers" => {
     "count" => 3,
+    "name" => "mediamedoi-dj-worker-%s",
+    "group" => "mediamedoi-dj-workers",
     "MIN_PRIORITY" => 0,
     "MAX_PRIORITY" => 99,
     "SLEEP_DELAY" => 1
   },
-  "lower priority" => {
-    "name" => "mediamedoi-dj-normal-%d",
-    "group" => "mediamedoi-dj-normal",
+  "encoders" => {
     "count" => 1,
+    "name" => "mediamedoi-dj-encoder-%s",
+    "group" => "mediamedoi-dj-encoders",
     "MIN_PRIORITY" => 100,
     "MAX_PRIORITY" => 1000,
     "SLEEP_DELAY" => 5
@@ -25,10 +26,10 @@ worker_groups = {
   #  q: read,  support files (handbrakecli bin)
   #  r: write, output folder
   #  s: read,  input folder, should be the same as media_library_root in app config
-  "lower priority remote" => {
-    "name" => "mediamedoi-dj-normal-remote-!host",
-    "group" => "mediamedoi-dj-normal-remote",
+  "desktop encoders" => {
     "count" => 1,
+    "name" => "mediamedoi-dj-encoder-%s",
+    "group" => "mediamedoi-dj-encoders",
     "MIN_PRIORITY" => 100,
     "MAX_PRIORITY" => 1000,
     "SLEEP_DELAY" => 5,
@@ -47,18 +48,23 @@ worker_groups.each_pair do |label,options|
   name_format = options.delete("name")
   group = options.delete("group")
   count = options.delete("count")
-  rake_args = options.merge("RAILS_ENV" => "production").map { |k,v| "#{k}=#{v}" }.join(" ")
 
   count.times do |i|
 
-    watch_name = name_format % i
-    watch_name.gsub!(/\!host/,options["REMOTE_ADDRESS"].downcase.gsub(/[^A-Z0-9]/i,'-')) if options["REMOTE_ADDRESS"]
+    worker_id = options["REMOTE_ADDRESS"] || "#{run_as}-#{i}@localhost"
+    watch_name = name_format % worker_id
+
+    rake_args = options
+    rake_args.merge!("ENCODER_WORKER_ID" => worker_id) if group == "mediamedoi-dj-encoders"
+    rake_args.merge!("RAILS_ENV" => "production")
+    rake_args = rake_args.map { |k,v| "#{k}=#{v}" }.join(" ")
+
     God.watch do |w|
       w.name = watch_name
       w.group = group
       w.interval = 15.seconds
 
-      w.uid = "mint"
+      w.uid = run_as
 
       w.dir = rails_root
       w.start = "#{rake} jobs:work #{rake_args}"
@@ -106,8 +112,8 @@ worker_groups.each_pair do |label,options|
     #if this is a remote worker, start up a process to start/stop it when the host comes online/offline
     if options["REMOTE_ADDRESS"]
       God.watch do |w|
-        w.name = watch_name.gsub(/remote/,'monitor-remote')
-        w.group = group.gsub(/remote/,'monitor-remote')
+        w.name = watch_name.gsub(/encoder/,'monitor')
+        w.group = group.gsub(/encoders/,'monitors')
         w.interval = 15.seconds
 
         w.uid = "mint"
