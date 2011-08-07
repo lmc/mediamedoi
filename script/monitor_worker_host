@@ -27,7 +27,13 @@ loop do
 
   if host_up && !worker_up
     puts "Starting..."
-    puts `sudo god start #{god_watch_name}`
+    begin
+      Timeout.timeout(10){ `ssh #{user_at_host} -t "sh ~/mediamedoi_hooks.sh"` } #that should get our drives mapped
+    rescue Timeout::Error
+      puts "Timed out!"
+    else
+      puts `sudo god start #{god_watch_name}`
+    end
   elsif !host_up && worker_up
     puts "Stopping..."
     puts `sudo god stop #{god_watch_name}`
