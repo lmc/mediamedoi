@@ -7,4 +7,6 @@ Mediamedoi::Application.routes.draw do
     end
   end
 
+  resources :hosts, :only => [:index]
+
 end

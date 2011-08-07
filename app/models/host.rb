@@ -17,9 +17,27 @@ class Host
     self.user, self.host = user, host
   end
 
+  def to_json(options={})
+    options[:methods] ||= []
+    options[:methods] += [:gigapixels_second,:gigapixels_second_human]
+    super(options)
+  end
+
+  def as_json(options={})
+    options[:methods] ||= []
+    options[:methods] += [:gigapixels_second,:gigapixels_second_human]
+    super(options)
+  end
+
   def gigapixels_second
+    #TODO: Indexes for this
+    #FIXME: Cache this or something!
     gpx_secs = ConversionQueueItem.gigapixels_for_host(self.host).limit(5).map(&:encoded_at_gigapixels_second)
     gpx_secs.inject{ |sum, gpx_sec| sum + gpx_sec }.to_f / gpx_secs.size #average
+  end
+
+  def gigapixels_second_human
+    ActionView::Helpers::NumberHelper.number_to_human_size(self.gigapixels_second).gsub(/B$/,'')
   end
 
 end
