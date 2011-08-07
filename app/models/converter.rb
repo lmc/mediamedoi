@@ -72,7 +72,7 @@ class Converter
 
   def self.unix_to_windows_param(unix_path)
     #this might look like some sort of sick joke but i assure you it's necessary 
-    unix_path.gsub(/\//,'\\\\\\\\\\\\\\\\').gsub(/ /,'\\\\\\\\ ').gsub(/\(/,'\\(').gsub(/\)/,'\\)')
+    unix_path.gsub(/\//,'\\\\\\\\\\\\\\\\').gsub(/ /,'\\\\\\\\ ').gsub(/\(/,'\\(').gsub(/\)/,'\\)').gsub(/\[/,'\\[').gsub(/\]/,'\\]')
   end
   
   def self.convert(conversion_queue_item)
