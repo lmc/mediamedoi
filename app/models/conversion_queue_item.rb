@@ -36,7 +36,6 @@ class ConversionQueueItem < ActiveRecord::Base
   end
   
   def convert!
-    self.class.remote_job_before if ENV["REMOTE_ADDRESS"]
     Converter.convert(self)
   end
 
@@ -48,6 +47,8 @@ class ConversionQueueItem < ActiveRecord::Base
   end
 
   def on_finish!
+    self.progress = "100.0"
+    self.time_remaining_seconds = nil
     self.finished_at = Time.zone.now
     self.status = 'completed'
     self.save!
@@ -117,16 +118,6 @@ class ConversionQueueItem < ActiveRecord::Base
 
   def job_options
     { :run_at => Time.zone.now, :priority => self.job_priority }
-  end
-
-
-  def self.remote_job_before
-    puts "remote_job_before"
-    puts ENV.inspect
-  end
-
-  def self.remote_job_after
-    
   end
   
 end

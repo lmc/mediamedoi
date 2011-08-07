@@ -16,13 +16,12 @@ class Converter
     input = conversion_queue_item.media_library_file.filesystem_path
     options = make_options({:input => esc(input),:scan => true})
 
-    cmd = "#{BIN_PATH} #{options}"
+    cmd = "#{BIN_PATH} #{options} 2>&1"
     puts cmd
     cmd = `#{cmd}`
     puts cmd
 
     titles = cmd.scan(/\+ title (\d+):([\s\S]+)/m)
-    puts titles.inspect
     titles.each do |title|
       index = title[0].to_i
       data = title[1]
@@ -87,7 +86,7 @@ class Converter
       cmd_prefix = "ssh #{ENV["REMOTE_ADDRESS"]} -t "
 
       puts `Running hooks...`
-      puts `#{cmd_prefix} sh ~/mediamedoi_hooks.sh`
+      puts `#{cmd_prefix} "sh ~/mediamedoi_hooks.sh"`
 
       bin_path = "/cygdrive/q/HandBrakeCLI.exe"
       input  = conversion_queue_item.media_library_file.filesystem_path("s:/")
