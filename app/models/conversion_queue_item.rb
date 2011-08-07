@@ -5,6 +5,10 @@ class ConversionQueueItem < ActiveRecord::Base
 
   after_create :generate_job!
 
+  named_scope :gigapixels_for_host, (lambda do |host|
+      order('finished_at DESC').where(:host => host).where('finished_at IS NOT NULL')
+    end)
+
   MINIMUM_PRIORITY = 100
 
   STATUSES = ['queued','processing','failed','completed'].freeze
@@ -47,6 +51,23 @@ class ConversionQueueItem < ActiveRecord::Base
     self.finished_at = Time.zone.now
     self.status = 'completed'
     self.save!
+  end
+
+  def gigapixels
+    self.media_width * self.media_height
+  end
+
+  def gigapixels_second
+    self.gigapixels * self.media_fps
+  end
+
+  def gigapixels_total
+    self.gigapixels * self.media_length_frames
+  end
+
+  def encoded_at_gigapixels_second
+    seconds = (self.finished_at - self.started_at).to_f
+    self.gigapixels_total / seconds
   end
   
   def publish_updates

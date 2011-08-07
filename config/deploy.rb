@@ -16,7 +16,7 @@ god_dir = "/Users/mint/God/apps/"
 
 ping_url = "http://#{server}#{web_path}#{ping_path}"
 
-god_groups = ["mediamedoi-dj-high","mediamedoi-dj-normal","mediamedoi-dj-normal-remote"]
+god_groups = ["mediamedoi-dj-workers","mediamedoi-dj-encoders","mediamedoi-dj-monitors"]
 
 set :application, application
 set :repository,  "."
