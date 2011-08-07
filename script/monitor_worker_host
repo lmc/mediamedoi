@@ -17,7 +17,7 @@ def worker_up?(god_watch_name)
 end
 
 user_at_host, god_watch_name = *ARGV
-sleep_time = 60
+sleep_time = 10
 
 loop do
   host_up = host_up?(user_at_host)
@@ -28,7 +28,7 @@ loop do
   if host_up && !worker_up
     puts "Starting..."
     begin
-      Timeout.timeout(10){ `ssh #{user_at_host} -t "sh ~/mediamedoi_hooks.sh"` } #that should get our drives mapped
+      Timeout.timeout(10){ `ssh #{user_at_host} -t` } #that should get our drives mapped
     rescue Timeout::Error
       puts "Timed out!"
     else

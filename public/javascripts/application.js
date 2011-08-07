@@ -48,6 +48,7 @@ var queue_poller = function(){
       var element = $("li#conversion_queue_item_"+queue_item.id);
       element.find('.progress').html( queue_item.progress+"%" );
       element.find('.time_remaining').html( seconds_formatted(queue_item.time_remaining) );
+      element.find('.host').html( queue_item.host );
     });
 
   });
