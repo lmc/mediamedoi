@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110619035835) do
+ActiveRecord::Schema.define(:version => 20110807081217) do
 
   create_table "conversion_queue_items", :force => true do |t|
     t.integer  "position"
@@ -28,6 +28,8 @@ ActiveRecord::Schema.define(:version => 20110619035835) do
     t.integer  "media_width"
     t.integer  "media_height"
     t.integer  "delayed_job_id"
+    t.string   "worker"
+    t.string   "host"
   end
 
   create_table "delayed_jobs", :force => true do |t|

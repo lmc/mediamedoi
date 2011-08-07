@@ -39,6 +39,7 @@ class ConversionQueueItem < ActiveRecord::Base
   def on_start!
     self.started_at = Time.zone.now
     self.status = 'processing'
+    self.worker, self.host = *ENV["ENCODER_WORKER_ID"].split('@')
     self.save!
   end
 
