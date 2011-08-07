@@ -85,6 +85,10 @@ class Converter
     #if we're running remotely, rewrite for the remote host's mapped network drives
     if ENV["REMOTE_ADDRESS"]
       cmd_prefix = "ssh #{ENV["REMOTE_ADDRESS"]} -t "
+
+      puts `Running hooks...`
+      puts `#{cmd_prefix} sh ~/mediamedoi_hooks.sh`
+
       bin_path = "/cygdrive/q/HandBrakeCLI.exe"
       input  = conversion_queue_item.media_library_file.filesystem_path("s:/")
       output = File.join("r:",conversion_queue_item.media_library_file.name)

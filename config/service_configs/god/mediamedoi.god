@@ -112,18 +112,18 @@ worker_groups.each_pair do |label,options|
     #if this is a remote worker, start up a process to start/stop it when the host comes online/offline
     if options["REMOTE_ADDRESS"]
       God.watch do |w|
-        watch_name = watch_name.gsub(/encoder/,'monitor')
-        group_name = group.gsub(/encoders/,'monitors')
+        monitor_watch_name = watch_name.gsub(/encoder/,'monitor')
+        monitor_group_name = group.gsub(/encoders/,'monitors')
 
-        w.name = watch_name
-        w.group = group_name
+        w.name = monitor_watch_name
+        w.group = monitor_group_name
         w.interval = 15.seconds
 
         w.uid = "mint"
 
         w.dir = rails_root
         w.start = "#{ruby} script/monitor_worker_host #{options["REMOTE_ADDRESS"]} #{watch_name}"
-        w.log = "#{rails_root}/log/delayed_job/#{watch_name}.log"
+        w.log = "#{rails_root}/log/delayed_job/#{monitor_watch_name}.log"
      
         # start if process is not running
         w.transition(:up, :start) do |on|
