@@ -6,6 +6,6 @@ development:
 
 production:
   media_library_root: /Volumes/Drobo/
-  output_path: /Volumes/Drobo/Converted Videos/
+  output_path: /Shared Items/Handbrake Dropbox/
   handbrake_path: /Applications/HandBrakeCLI
   mount_url: /apps/mediamedoi
